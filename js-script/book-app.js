@@ -3,16 +3,20 @@ const getId = (idName) => {
     const idField = document.getElementById(idName);
     return idField;
 }
-// get the search value to call API data 
+// get the search value, and load data 
 document.getElementById('search-btn').addEventListener('click',() => {
     const searchValue = getId('search-input').value;
+    // clear search field, book container and message 
+    getId('search-input').value = "";
+    getId('books-container').innerHTML = "";
+    getId('search-result').innerHTML = "";
+    // load data 
     if (searchValue !== "") {
         loadData(searchValue);
         getId('input-error').style.display = "none";
     }else{
         getId('input-error').style.display = "block";
     }
-    console.log('click-btn');
 })
 
 
@@ -25,32 +29,32 @@ const loadData = bookName => {
     .catch(err => displayErrorMsg(err))
 }
 
+// Show each book details in card 
 const displayBookList = books => {
-    getId('books-container').innerHTML = "";
-    getId('search-result').innerHTML = "";
     const quantity = books.length;
+    // show the number of book founds in search 
     displaySearchQuantity(quantity);
+    // create card for each book 
     books.forEach(book =>{
         const {cover_i, title, author_name, first_publish_year} = book;
         const div = document.createElement('div');
-        div.classList.add("col");
+        div.classList.add("col", );
         div.innerHTML = `
             <div class="card h-100">
                 <div class="card-img">
-                    <img id="cover-img" src="${getImgUrl(cover_i)}" class="card-img-top" alt="...">
+                    <img id="cover-img" src="${getImgUrl(cover_i)}" class="cover-img card-img-top p-3" alt="...">
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">${title}</h5>
-                    <p class="card-text">Author: ${arrayToString(author_name)}</p>
-                    <p class="card-text">First Published: ${dataFilter(first_publish_year)}</p>
+                    <h5 class="text-center card-title">${title}</h5>
+                    <ul class="list-unstyled">
+                        <li class="card-text">Author: ${arrayToString(author_name)}</li>
+                        <li class="card-text">First Published: ${dataFilter(first_publish_year)}</li>
+                    </ul>
                 </div>
             </div>
         `;
+        // add the book card to the container 
         getId('books-container').appendChild(div);
-              // console.log(author_name, first_publish_year, title);
-            //   console.log(author_name.toString().replace(',',', '));
-            // console.log(cover_i);
-            console.log(book);
     })
 }
 
@@ -66,10 +70,11 @@ const dataFilter = data => {
     return pureData;
 }  
 
+// create dynamic url for cover image 
 const getImgUrl = coverId => {
     const coverApiUrl = `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`;
     const coverLocalUrl = "../image/no-cover.jpg";
-    const coverUrl = coverId ? ( !isNaN(coverId)? coverApiUrl :  coverLocalUrl ) : coverLocalUrl;
+    const coverUrl = coverId ? ( !isNaN(coverId) ? coverApiUrl :  coverLocalUrl ) : coverLocalUrl;
     return coverUrl;
 }
 
@@ -85,8 +90,7 @@ const displaySearchQuantity = number => {
         `;
     }
 }
-// search-result
 
 const displayErrorMsg = error =>{
-  return  alert("internet or server error")
+  return  getId('connection-err').style.display = "block";
 }
