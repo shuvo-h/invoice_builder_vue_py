@@ -39,7 +39,6 @@ const displayBookList = data => {
     // create card for each book 
     books.forEach(book =>{
         const {cover_i, title, author_name, first_publish_year, publisher} = book;
-        console.log(publisher);
         const div = document.createElement('div');
         div.classList.add("col", "book");
         div.innerHTML = `
@@ -52,7 +51,6 @@ const displayBookList = data => {
                         <div class="card-text">Author: ${arrayToString(author_name)}</div>
                         <div class="card-text publisher overflow-hidden">Publisher: ${arrayToString(publisher)}</div>
                         <div class="card-text">First Published: ${dataFilter(first_publish_year)}<div>
-                        
                 </div>
             </div>
         `;
