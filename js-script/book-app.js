@@ -22,34 +22,37 @@ document.getElementById('search-btn').addEventListener('click',() => {
 
 // get JSON data based on search result 
 const loadData = bookName => {
-    const url = `http://openlibrary.org/search.json?q=${bookName}`;
+    const url = `https://openlibrary.org/search.json?q=${bookName}`;
     fetch(url)
     .then(res => res.json())
-    .then(data => displayBookList(data.docs))
+    .then(data => displayBookList(data))
     .catch(err => displayErrorMsg(err))
 }
 
 // Show each book details in card 
-const displayBookList = books => {
-    const quantity = books.length;
+const displayBookList = data => {
     // show the number of book founds in search 
-    displaySearchQuantity(quantity);
+    const totalQuantity = data.numFound;
+    const books = data.docs;
+    const quantity = books.length;
+    displaySearchQuantity(quantity, totalQuantity);
     // create card for each book 
     books.forEach(book =>{
-        const {cover_i, title, author_name, first_publish_year} = book;
+        const {cover_i, title, author_name, first_publish_year, publisher} = book;
+        console.log(publisher);
         const div = document.createElement('div');
-        div.classList.add("col", );
+        div.classList.add("col", "book");
         div.innerHTML = `
             <div class="card h-100">
-                <div class="card-img">
+                <div class="card-img img-body">
                     <img id="cover-img" src="${getImgUrl(cover_i)}" class="cover-img card-img-top p-3" alt="...">
                 </div>
                 <div class="card-body">
                     <h5 class="text-center card-title">${title}</h5>
-                    <ul class="list-unstyled">
-                        <li class="card-text">Author: ${arrayToString(author_name)}</li>
-                        <li class="card-text">First Published: ${dataFilter(first_publish_year)}</li>
-                    </ul>
+                        <div class="card-text">Author: ${arrayToString(author_name)}</div>
+                        <div class="card-text publisher overflow-hidden">Publisher: ${arrayToString(publisher)}</div>
+                        <div class="card-text">First Published: ${dataFilter(first_publish_year)}<div>
+                        
                 </div>
             </div>
         `;
@@ -60,7 +63,7 @@ const displayBookList = books => {
 
 // Convert array elements to string 
 const arrayToString = arrayName => {
-    const string = arrayName ? (Array.isArray(arrayName) ? arrayName.toString().replace(',',", ") : arrayName) : "Unknown Author";
+    const string = arrayName ? (Array.isArray(arrayName) ? arrayName.toString().replace(',',", ") : arrayName) : "Unknown";
     return string;
 }
 
@@ -73,16 +76,16 @@ const dataFilter = data => {
 // create dynamic url for cover image 
 const getImgUrl = coverId => {
     const coverApiUrl = `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`;
-    const coverLocalUrl = "../image/no-cover.jpg";
-    const coverUrl = coverId ? ( !isNaN(coverId) ? coverApiUrl :  coverLocalUrl ) : coverLocalUrl;
-    return coverUrl;
+    if (!isNaN(coverId)) {
+        return coverApiUrl;
+    }
 }
 
 // display the total search quantity
-const displaySearchQuantity = number => {
+const displaySearchQuantity = (number,totalNumber) => {
     if (number > 0) {
         getId('search-result').innerHTML = `
-            <p>Total ${number} books has found</p>
+            <p>Total ${number} books are showing among ${totalNumber} books.</p>
         `;
     }else{
         getId('search-result').innerHTML = `

@@ -11,6 +11,13 @@
     background-color: lightcoral;
 }
 /* book card style  */
-.cover-img{
+.img-body{
     height: 20rem;
+}
+.cover-img{
+    height: 100%;
+}
+.publisher{
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
