@@ -1,0 +1,8 @@
+invoice making web application:
+ - invoice form builder: user can dynamically build different types of form for their invoice
+ - in DB, store the form format for the user
+ - make a print option of the invoice including shop name and address, logo
+ - Implement payment system where based on the package, user can create forms and generate unlimited invoice.
+ - use digital signature on the invoice
+ - use bar code of the invoice number with a unique invoice number
+ - 
